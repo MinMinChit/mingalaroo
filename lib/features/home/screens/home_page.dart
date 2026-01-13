@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:wedding_v1/features/home/screens/congratulation_section.dart';
-import 'package:wedding_v1/features/home/screens/invitation_letter_section.dart';
+import 'package:wedding_v1/features/home/screens/invite_section.dart';
 import 'package:wedding_v1/features/home/screens/spouse_name_section.dart';
+import 'package:wedding_v1/features/home/screens/poem_section.dart';
+import 'package:wedding_v1/features/home/screens/rsvp_section.dart';
 import 'package:wedding_v1/features/home/screens/story_section.dart';
-import 'package:wedding_v1/features/home/widgets/timeline_image.dart';
+import 'package:wedding_v1/features/home/screens/thank_you_section.dart';
 
 import '../../../services/curtain_animation.dart';
 import '../widgets/custom_app_bar.dart';
@@ -22,9 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      setState(() {}); // rebuild to update scrollOffset
-    });
+    // No listener needed for setState anymore
   }
 
   @override
@@ -52,33 +51,19 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 HeroSection(
-                  scrollOffset: safeOffset,
+                  scrollController: _scrollController,
                   startAnimate: openCurtain,
                 ),
                 SpouseNameSection(),
-                const SizedBox(height: 120),
-                TimelineImage(
-                  title: '2015',
-                ),
-                const SizedBox(height: 120),
-                TimelineImage(
-                  title: '2016',
-                ),
-                const SizedBox(height: 120),
-                TimelineImage(
-                  title: '2017',
-                ),
-                const SizedBox(height: 150),
-                InvitationLetterSection(),
-                const SizedBox(height: 150),
                 StorySection(),
-                const SizedBox(height: 150),
-                CongratulationSection(),
-                const SizedBox(height: 150),
+                PoemSection(),
+                InviteSection(),
+                RSVPSection(),
+                ThankYouSection(),
               ],
             ),
           ),
-          if (safeOffset >= size.height * 0.45) LiquidCapsuleBar(),
+          // if (safeOffset >= size.height * 0.45) LiquidCapsuleBar(),
           _buildLoadingScreen(),
         ],
       ),

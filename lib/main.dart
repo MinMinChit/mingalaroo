@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wedding_v1/features/home/screens/home_page.dart';
 import 'package:wedding_v1/services/app_theme.dart';
+import 'package:wedding_v1/widgets/emoji_cursor.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MingalarOo',
       theme: KTheme.lightTheme,
-      home: HomePage(),
+      home: EmojiCursor(
+        child: HomePage(),
+      ),
     );
   }
 }

@@ -4,23 +4,99 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-class MagicButtonPage extends StatefulWidget {
-  const MagicButtonPage({super.key});
+class CelebrationButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onPressed;
+
+  const CelebrationButton({
+    super.key,
+    required this.child,
+    this.onPressed,
+  });
 
   @override
-  State<MagicButtonPage> createState() => _MagicButtonPageState();
+  State<CelebrationButton> createState() => _CelebrationButtonState();
 }
 
-class _MagicButtonPageState extends State<MagicButtonPage>
-    with TickerProviderStateMixin {
-  late AnimationController _holdController;
-  late Ticker _ticker;
+class _CelebrationButtonState extends State<CelebrationButton> {
+  bool _isCooldown = false;
 
+  void _handleTap() {
+    if (_isCooldown) return;
+
+    widget.onPressed?.call();
+
+    // Trigger Particle Overlay
+    _showParticles();
+
+    // Cooldown 5s to prevent spamming
+    setState(() {
+      _isCooldown = true;
+    });
+    Timer(const Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _isCooldown = false;
+        });
+      }
+    });
+  }
+
+  void _showParticles() {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(Offset.zero);
+    final Size size = renderBox.size;
+
+    // Calculate center of the button in global coordinates
+    final Offset buttonCenter =
+        offset + Offset(size.width / 2, size.height / 2);
+
+    final overlay = Overlay.of(context);
+    OverlayEntry? entry;
+
+    entry = OverlayEntry(
+      builder: (context) => ParticleOverlay(
+        buttonCenter: buttonCenter,
+        onFinished: () {
+          entry?.remove();
+          entry = null;
+        },
+      ),
+    );
+
+    overlay.insert(entry!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _handleTap,
+      child: AbsorbPointer(child: widget.child),
+    );
+  }
+}
+
+// --- Overlay Widget to manage animation ---
+
+class ParticleOverlay extends StatefulWidget {
+  final Offset buttonCenter;
+  final VoidCallback onFinished;
+
+  const ParticleOverlay({
+    super.key,
+    required this.buttonCenter,
+    required this.onFinished,
+  });
+
+  @override
+  State<ParticleOverlay> createState() => _ParticleOverlayState();
+}
+
+class _ParticleOverlayState extends State<ParticleOverlay>
+    with SingleTickerProviderStateMixin {
+  late Ticker _ticker;
   final List<Particle> _particles = [];
   final Random _random = Random();
-
-  bool _isCelebrationActive = false; // Controls the final "✨" state
-  bool _confettiFired = false; // Ensures confetti triggers only once per hold
 
   // Particle Settings
   static const int _confettiCount = 200;
@@ -48,87 +124,44 @@ class _MagicButtonPageState extends State<MagicButtonPage>
   @override
   void initState() {
     super.initState();
-    _holdController = AnimationController(
-      vsync: this,
-      // 2800ms total (4 beats x 700ms)
-      duration: const Duration(milliseconds: 3000),
-    );
-
-    // Listener to trigger confetti EXACTLY at the start of Beat 4
-    _holdController.addListener(() {
-      // 0.75 is the 3/4 mark (Start of the 4th beat)
-      if (_holdController.value >= 0.75 && !_confettiFired) {
-        _confettiFired = true; // Lock so it doesn't re-fire in the same press
-        _fireConfetti();
-      }
-    });
-
-    // Listener to handle the "Finish" state after the pop animation is done
-    _holdController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _showFinishedState();
-      }
-    });
-
+    _spawnParticles();
     _ticker = createTicker(_updateParticles);
+    _ticker.start();
   }
 
   @override
   void dispose() {
-    _holdController.dispose();
     _ticker.dispose();
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) {
-    if (_isCelebrationActive) return;
-
-    // Reset trigger flags for a new attempt
-    _confettiFired = false;
-
-    if (_holdController.isCompleted) _holdController.reset();
-    _holdController.forward();
+  void _spawnParticles() {
+    // We can't access MediaQuery size easily in initState generally, 
+    // but in Overlay it should be safe or we use window size / LayoutBuilder.
+    // Actually, CustomPaint will give us size in paint, but we need to spawn first.
+    // Use window physical size / pixel ratio or generic large bounds.
+    // Safe bet: use widgets binding window size.
+    // Or just layout builder.
+    // For spawning, we need screen width for flowers.
+    // Let's assume a standard mobile width or get it from view.
+    // Better: spawn in post-frame? No, delay is bad.
+    // We'll use a large enough width assumption or get it from context?
+    // Overlay entry has context.
   }
 
-  void _onTapUp(TapUpDetails details) {
-    if (_isCelebrationActive) return;
-    if (!_holdController.isCompleted) _holdController.reverse();
-  }
-
-  void _onTapCancel() {
-    if (_isCelebrationActive) return;
-    _holdController.reset();
-  }
-
-  // Called immediately when hitting Beat 4
-  void _fireConfetti() {
-    _spawnParticles();
-    if (!_ticker.isActive) {
-      _ticker.start();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_particles.isEmpty) {
+      final size = MediaQuery.of(context).size;
+      _spawnInitialParticles(size);
     }
   }
 
-  // Called when the entire 2.8s animation finishes
-  void _showFinishedState() {
-    setState(() {
-      _isCelebrationActive = true;
-    });
-
-    Timer(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _isCelebrationActive = false;
-          _holdController.reset();
-        });
-      }
-    });
-  }
-
-  void _spawnParticles() {
+  void _spawnInitialParticles(Size screenSize) {
     _particles.clear();
-    final size = MediaQuery.of(context).size;
 
-    // 1. Confetti
+    // 1. Confetti (Shoots from Button Center)
     for (int i = 0; i < _confettiCount; i++) {
       double angle = _random.nextDouble() * 2 * pi;
       double speed = _random.nextDouble() * 15 + 7;
@@ -136,8 +169,8 @@ class _MagicButtonPageState extends State<MagicButtonPage>
       _particles.add(
         ConfettiParticle(
           color: _confettiColors[_random.nextInt(_confettiColors.length)],
-          x: size.width / 2,
-          y: size.height / 2,
+          x: widget.buttonCenter.dx,
+          y: widget.buttonCenter.dy,
           vx: cos(angle) * speed,
           vy: sin(angle) * speed,
           gravity: _random.nextDouble() * 0.2 + 0.1,
@@ -147,14 +180,14 @@ class _MagicButtonPageState extends State<MagicButtonPage>
       );
     }
 
-    // 2. Flowers
+    // 2. Flowers (Drop from Top of Screen)
     for (int i = 0; i < _flowerCount; i++) {
       _particles.add(
         FlowerParticle(
           emoji: _flowerEmojis[_random.nextInt(_flowerEmojis.length)],
-          x: (_random.nextDouble() * size.width * 1.2) - (size.width * 0.1),
-          y: -(_random.nextDouble() * 800),
-          vy: _random.nextDouble() * 10 + 10,
+          x: _random.nextDouble() * screenSize.width, // Random X across screen
+          y: -(_random.nextDouble() * 200) - 50, // Start just above screen
+          vy: _random.nextDouble() * 5 + 5, // Fall speed
           oscillationSpeed: _random.nextDouble() * 0.02 + 0.01,
           rotationSpeed: (_random.nextDouble() - 0.5) * 0.05,
           pulsePhase: _random.nextDouble() * pi * 2,
@@ -164,150 +197,40 @@ class _MagicButtonPageState extends State<MagicButtonPage>
   }
 
   void _updateParticles(Duration elapsed) {
-    if (_particles.isEmpty) {
-      _ticker.stop();
-      return;
-    }
+    // If we haven't spawned yet (no context/size), skip
+    if (_particles.isEmpty) return;
 
-    final size = MediaQuery.of(context).size;
+    // Use a large height to kill particles
+    final killY = widget.buttonCenter.dy + 1500; // heuristic
     bool activeParticles = false;
 
     setState(() {
       for (var p in _particles) {
         p.update();
-        if (p.y < size.height + 200 &&
-            (p is! ConfettiParticle || p.opacity > 0)) {
+        if (p.y < killY && (p is! ConfettiParticle || p.opacity > 0)) {
           activeParticles = true;
         }
       }
     });
 
     if (!activeParticles) {
-      _particles.clear();
       _ticker.stop();
+      widget.onFinished();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Center(
-          child: GestureDetector(
-            onTapDown: _onTapDown,
-            onTapUp: _onTapUp,
-            onTapCancel: _onTapCancel,
-            child: AnimatedBuilder(
-              animation: _holdController,
-              builder: (context, child) {
-                // --- ANIMATION LOGIC ---
-
-                Widget centerContent;
-                double progress = _holdController.value;
-
-                if (_holdController.isCompleted) {
-                  // Done state
-                  centerContent = const Icon(
-                    Icons.check,
-                    size: 40,
-                    color: Colors.white,
-                  );
-                } else if (progress > 0) {
-                  // Calculate which number (3, 2, or 1) we are on
-                  // rawStep goes from 0.0 to 3.0
-                  double rawStep = progress * 3;
-                  int index = rawStep.floor(); // 0, 1, or 2
-                  int count = 3 - index;
-
-                  // localT goes from 0.0 to 1.0 for EACH number repeatedly
-                  // This drives the "Pop" effect every time the number changes
-                  double localT = rawStep - index;
-
-                  // Visual Curves
-                  // Scale: Overshoots slightly (0.5 -> 1.2 -> 1.0)
-                  double scaleValue = Curves.easeOutBack.transform(localT);
-                  // Opacity: Fades in quickly
-                  double opacityValue = Curves.easeIn
-                      .transform(localT)
-                      .clamp(0.0, 1.0);
-
-                  centerContent = Transform.scale(
-                    scale:
-                        0.5 +
-                        (scaleValue * 1.0), // Start at 0.5x, end around 1.5x
-                    child: Opacity(
-                      opacity: opacityValue,
-                      child: Text(
-                        "$count",
-                        style: const TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.purpleAccent,
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  // Idle state
-                  centerContent = const Icon(
-                    Icons.touch_app,
-                    size: 40,
-                    color: Colors.blue,
-                  );
-                }
-
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Progress Ring
-                    SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: CircularProgressIndicator(
-                        value: _holdController.value,
-                        strokeWidth: 8,
-                        backgroundColor: Colors.grey.shade200,
-                        color: Colors.purpleAccent,
-                      ),
-                    ),
-                    // The Circle Container
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: _holdController.isCompleted
-                            ? Colors.greenAccent
-                            : Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          if (!_holdController.isCompleted)
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              blurRadius: 5,
-                            ),
-                        ],
-                      ),
-                      child: Center(child: centerContent),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
-
-        IgnorePointer(
-          child: CustomPaint(
-            painter: ParticlePainter(_particles),
-            child: Container(),
-          ),
-        ),
-      ],
+    return IgnorePointer(
+      child: CustomPaint(
+        size: Size.infinite,
+        painter: ParticlePainter(_particles),
+      ),
     );
   }
 }
 
-// --- Particle Logic (Unchanged) ---
+// --- Particle Logic ---
 
 abstract class Particle {
   double x, y;

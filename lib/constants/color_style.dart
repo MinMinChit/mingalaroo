@@ -22,7 +22,7 @@ class KStyle {
 
   static TextStyle tTitleXXL = GoogleFonts.inriaSerif(
     textStyle: TextStyle(
-      fontSize: 32,
+      fontSize: 28,
       fontWeight: FontWeight.bold,
       color: KStyle.cPrimaryText,
     ),
@@ -52,14 +52,22 @@ class KStyle {
     ),
   );
 
-  static TextStyle tBodyL = GoogleFonts.inriaSerif(
+    static TextStyle tTitleS = GoogleFonts.inriaSerif(
     textStyle: TextStyle(
-      fontSize: 18,
+      fontSize: 13,
+      fontWeight: FontWeight.bold,
+      color: KStyle.cPrimaryText,
+    ),
+  );
+
+  static TextStyle tBodyL = GoogleFonts.inter(
+    textStyle: TextStyle(
+      fontSize: 17,
       fontWeight: FontWeight.normal,
       color: KStyle.cPrimaryText,
     ),
   );
-  static TextStyle tBodyM = GoogleFonts.inriaSerif(
+  static TextStyle tBodyM = GoogleFonts.inter(
     textStyle: TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.normal,
@@ -67,7 +75,7 @@ class KStyle {
     ),
   );
 
-  static TextStyle tBodyS = GoogleFonts.inriaSerif(
+  static TextStyle tBodyS = GoogleFonts.inter(
     textStyle: TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.normal,

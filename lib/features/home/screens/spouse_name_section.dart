@@ -12,31 +12,24 @@ class SpouseNameSection extends StatefulWidget {
 
 class _SpouseNameSectionState extends State<SpouseNameSection>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+  late AnimationController _bgController; // For slow background panning
 
   bool _isVisible = false;
+  Offset _mousePos = Offset.zero;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
+    _bgController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticOut,
-      ),
-    );
+      duration: const Duration(seconds: 20), // Extremely slow speed
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _bgController.dispose();
     super.dispose();
   }
 
@@ -49,55 +42,154 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
           setState(() {
             _isVisible = true;
           });
-          _controller.repeat(reverse: true);
         }
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 120),
-        color: KStyle.cPrimary,
-        width: double.infinity,
-        child: Column(
+      child: MouseRegion(
+        onHover: (event) {
+          setState(() {
+            _mousePos = event.localPosition;
+          });
+        },
+        child: Stack(
           children: [
-            if (_isVisible)
-              buildNameJob(
-                    'Aung Kyaw Phyo',
-                    'Senior Engineer, Yoma Company Ltd',
-                  )
-                  .animate()
-                  .slideY(
-                    begin: -0.6,
-                    end: 0,
-                    curve: Curves.easeOutCubic,
-                    duration: 700.ms,
-                  )
-                  .fadeIn(duration: 600.ms),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Image.asset(
-                  'assets/icons/heart_fill.png',
-                  width: 48,
-                ),
+            // BACKGROUND LAYERS
+            Positioned.fill(child: _buildAnimatedBackground()),
+
+            // CONTENT
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 120),
+              width: double.infinity,
+              child: Column(
+                children: [
+                  if (_isVisible)
+                    buildNameJob(
+                          'Aung Kyaw Phyo',
+                          '''B.C.Sc (Software Engineering) (UIT)
+son of U Maung Maung Lwin and Daw Khin San Yu''',
+                        )
+                        .animate()
+                        .slideY(
+                          begin: -1.0, // Increased distance
+                          end: 0,
+                          curve: Curves.easeOutQuart, // Smoother premium feel
+                          duration: 1200.ms, // Much slower
+                        )
+                        .fadeIn(duration: 1200.ms),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 48),
+                    child: _buildTiltingHeart(context),
+                  ),
+                  if (_isVisible)
+                    buildNameJob(
+                          'Cho Phoo Paing',
+                          '''B.C.Sc (Software Engineering) (UCSY)
+only daughter of U Soe Paing and Daw Yi Yi Cho''',
+                        )
+                        .animate()
+                        .slideY(
+                          begin: 1.0, // Increased distance
+                          end: 0,
+                          curve: Curves.easeOutQuart,
+                          duration: 1200.ms,
+                        )
+                        .fadeIn(duration: 1200.ms),
+                ],
               ),
             ),
-            if (_isVisible)
-              buildNameJob(
-                    'Payinn Yaung',
-                    'Senior Engineer, Yoma Company Ltd',
-                  )
-                  .animate()
-                  .slideY(
-                    begin: 0.6,
-                    end: 0,
-                    curve: Curves.easeOutCubic,
-                    duration: 700.ms,
-                  )
-                  .fadeIn(duration: 600.ms),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTiltingHeart(BuildContext context) {
+    final Size size = MediaQuery.sizeOf(context);
+    final double centerX = size.width / 2;
+    // Approximate center Y
+    final double centerY = 400; 
+
+    final double dx = _mousePos.dx - centerX;
+    final double dy = _mousePos.dy - centerY;
+    
+    // Max tilt
+    const double maxTilt = 0.5; 
+
+    // Reflection calculation
+    // Shift gradient center opposite to mouse or towards it.
+    final double reflectX = (_mousePos.dx / size.width) * 2 - 1; 
+    final double reflectY = (_mousePos.dy / 800) * 2 - 1; 
+
+    return Transform(
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001) // Perspective
+        ..rotateX(-dy * 0.001 * maxTilt) 
+        ..rotateY(dx * 0.001 * maxTilt),
+      alignment: Alignment.center,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Drawn Heart Base
+          CustomPaint(
+            size: const Size(48, 48),
+            painter: _HeartPainter(color: Colors.red),
+          ),
+          
+          // Glossy Reflection Overlay (Clipped)
+          ClipPath(
+            clipper: const _HeartClipper(),
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: Alignment(-reflectX, -reflectY),
+                  radius: 1.0, // Slightly larger radius for smoother falloff across the shape
+                  colors: [
+                    Colors.white.withOpacity(0.5), // Stronger reflection since it's masked
+                    Colors.transparent,
+                  ],
+                  stops: const [0.0, 1.0],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _buildAnimatedBackground() {
+    return Stack(
+      children: [
+        // Solid dark base
+        Container(color: KStyle.cPrimary),
+
+        // Layer 1: Base Background at 8% Opacity (Reverted to original subtle visibility)
+        _buildMovingImage(opacity: 0.08),
+      ],
+    );
+  }
+
+  Widget _buildMovingImage({required double opacity}) {
+    return AnimatedBuilder(
+      animation: _bgController,
+      builder: (context, child) {
+        // Panning from -5% to +5% of width to create movement without massive cropping
+        final offset = (_bgController.value - 0.5) * 50; 
+        
+        return Transform.translate(
+          offset: Offset(offset, 0),
+          child: Opacity(
+            opacity: opacity,
+            child: Image.asset(
+              'assets/images/name_bg.webp',
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -106,13 +198,60 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
       children: [
         Text(
           name,
+          textAlign: TextAlign.center,
           style: KStyle.tTitleXXL.copyWith(color: KStyle.cWhite),
         ),
+        const SizedBox(height: 8),
         Text(
           job,
-          style: KStyle.tBodyM.copyWith(color: KStyle.cWhite),
+          textAlign: TextAlign.center,
+          style: KStyle.tBodyS.copyWith(color: KStyle.cWhite.withOpacity(0.5), height: 1.5),
         ),
       ],
     );
   }
+}
+
+class _HeartPainter extends CustomPainter {
+  final Color color;
+  _HeartPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = _HeartClipper.getHeartPath(size);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _HeartClipper extends CustomClipper<Path> {
+  const _HeartClipper();
+
+  @override
+  Path getClip(Size size) {
+    return getHeartPath(size);
+  }
+
+  static Path getHeartPath(Size size) {
+    final double width = size.width;
+    final double height = size.height;
+    
+    final path = Path();
+    path.moveTo(0.5 * width, height * 0.35);
+    path.cubicTo(0.2 * width, height * 0.1, -0.25 * width, height * 0.6,
+        0.5 * width, height);
+    path.moveTo(0.5 * width, height * 0.35);
+    path.cubicTo(0.8 * width, height * 0.1, 1.25 * width, height * 0.6,
+        0.5 * width, height);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }

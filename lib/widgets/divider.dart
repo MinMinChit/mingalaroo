@@ -19,8 +19,8 @@ class CustomDivider extends StatelessWidget {
           begin: reverse ? Alignment.centerLeft : Alignment.centerRight,
           end: reverse ? Alignment.centerRight : Alignment.centerLeft,
           colors: const [
-            Color(0xFF000000), // solid
-            Color(0x00666666), // transparent
+            Color(0xFFE6E6E6), // solid #E6E6E6
+            Color(0x00E6E6E6), // transparent #E6E6E6
           ],
         ),
       ),
