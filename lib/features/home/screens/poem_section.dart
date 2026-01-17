@@ -10,6 +10,8 @@ class PoemSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.sizeOf(context).width < 600;
+
     return Column(
       children: [
         // PART 1: Text Container
@@ -63,7 +65,7 @@ class PoemSection extends StatelessWidget {
             'assets/images/poen_line1.webp',
             'assets/images/poem_line2.webp',
           ],
-          speedDuration: 50.seconds,
+          speedDuration: isMobile ? 70.seconds : 50.seconds,
           isMovingRight: true,
         ),
 
@@ -75,7 +77,7 @@ class PoemSection extends StatelessWidget {
             'assets/images/poem_line2.webp',
             'assets/images/poen_line1.webp',
           ],
-          speedDuration: 63.seconds, 
+          speedDuration: isMobile ? 85.seconds : 63.seconds, 
           isMovingRight: false, // Move Left
         ),
 

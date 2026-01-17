@@ -116,7 +116,7 @@ class _RSVPSectionState extends State<RSVPSection> {
                         ),
                       ),
                       child: Text(
-                        'So sorry, I couldn\'t attend.',
+                        'So Sorry, I will celebrate from afar',
                         style: KStyle.tTitleM.copyWith(
                           color: KStyle.cSecondaryText,
                           fontSize: 14, 

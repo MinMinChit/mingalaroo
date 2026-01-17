@@ -35,79 +35,66 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
 
   @override
   Widget build(BuildContext context) {
-    return VisibilityDetector(
-      key: const Key('spouse_name_section'),
-      onVisibilityChanged: (info) {
-        if (info.visibleFraction > 0.6 && !_isVisible) {
-          setState(() {
-            _isVisible = true;
-          });
-        }
-      },
-      child: MouseRegion(
-        onHover: (event) {
-          setState(() {
-            _mousePos = event.localPosition;
-          });
-        },
-        child: Stack(
-          children: [
-            // BACKGROUND LAYERS
-            Positioned.fill(child: _buildAnimatedBackground()),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return VisibilityDetector(
+          key: const Key('spouse_name_section'),
+          onVisibilityChanged: (info) {
+            if (info.visibleFraction > 0.6 && !_isVisible) {
+              setState(() {
+                _isVisible = true;
+              });
+            }
+          },
+          child: MouseRegion(
+            onHover: (event) {
+              setState(() {
+                _mousePos = event.localPosition;
+              });
+            },
+            child: Stack(
+              children: [
+                // BACKGROUND LAYERS
+                Positioned.fill(child: _buildAnimatedBackground()),
 
-            // CONTENT
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 120),
-              width: double.infinity,
-              child: Column(
-                children: [
-                  if (_isVisible)
-                    buildNameJob(
-                          'Aung Kyaw Phyo',
-                          '''B.C.Sc (Software Engineering) (UIT)
-son of U Maung Maung Lwin and Daw Khin San Yu''',
-                        )
-                        .animate()
-                        .slideY(
-                          begin: -1.0, // Increased distance
-                          end: 0,
-                          curve: Curves.easeOutQuart, // Smoother premium feel
-                          duration: 1200.ms, // Much slower
-                        )
-                        .fadeIn(duration: 1200.ms),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 48),
-                    child: _buildTiltingHeart(context),
+                // CONTENT
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 120),
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      buildNameJob(
+                            'Aung Kyaw Phyo',
+                            '''B.C.Sc (Software Engineering) (UIT)\nson of U Maung Maung Lwin and Daw Khin San Yu''',
+                          )
+                          .animate(target: _isVisible ? 1 : 0)
+                          .fadeIn(duration: 1200.ms, curve: Curves.easeOut),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 48),
+                        child: _buildTiltingHeart(context, constraints.maxWidth),
+                      ),
+                      buildNameJob(
+                            'Cho Phoo Paing',
+                            '''B.C.Sc (Software Engineering) (UCSY)\nonly daughter of U Soe Paing and Daw Yi Yi Cho''',
+                          )
+                          .animate(target: _isVisible ? 1 : 0)
+                          .fadeIn(duration: 1200.ms, curve: Curves.easeOut),
+                    ],
                   ),
-                  if (_isVisible)
-                    buildNameJob(
-                          'Cho Phoo Paing',
-                          '''B.C.Sc (Software Engineering) (UCSY)
-only daughter of U Soe Paing and Daw Yi Yi Cho''',
-                        )
-                        .animate()
-                        .slideY(
-                          begin: 1.0, // Increased distance
-                          end: 0,
-                          curve: Curves.easeOutQuart,
-                          duration: 1200.ms,
-                        )
-                        .fadeIn(duration: 1200.ms),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildTiltingHeart(BuildContext context) {
-    final Size size = MediaQuery.sizeOf(context);
-    final double centerX = size.width / 2;
+  Widget _buildTiltingHeart(BuildContext context, double maxWidth) {
+    final double centerX = maxWidth / 2;
     // Approximate center Y
-    final double centerY = 400; 
+    const double centerY = 400; 
 
     final double dx = _mousePos.dx - centerX;
     final double dy = _mousePos.dy - centerY;
@@ -116,9 +103,8 @@ only daughter of U Soe Paing and Daw Yi Yi Cho''',
     const double maxTilt = 0.5; 
 
     // Reflection calculation
-    // Shift gradient center opposite to mouse or towards it.
-    final double reflectX = (_mousePos.dx / size.width) * 2 - 1; 
-    final double reflectY = (_mousePos.dy / 800) * 2 - 1; 
+    final double reflectX = (_mousePos.dx / maxWidth).clamp(0, 1) * 2 - 1; 
+    final double reflectY = (_mousePos.dy / 800).clamp(0, 1) * 2 - 1; 
 
     return Transform(
       transform: Matrix4.identity()
@@ -144,9 +130,9 @@ only daughter of U Soe Paing and Daw Yi Yi Cho''',
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   center: Alignment(-reflectX, -reflectY),
-                  radius: 1.0, // Slightly larger radius for smoother falloff across the shape
+                  radius: 1.0, 
                   colors: [
-                    Colors.white.withOpacity(0.5), // Stronger reflection since it's masked
+                    Colors.white.withOpacity(0.5), 
                     Colors.transparent,
                   ],
                   stops: const [0.0, 1.0],
