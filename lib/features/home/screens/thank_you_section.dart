@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:wedding_v1/constants/color_style.dart';
+import 'package:wedding_v1/features/home/screens/footer_section.dart';
 
 class ThankYouSection extends StatefulWidget {
   const ThankYouSection({super.key});
@@ -30,7 +31,16 @@ class _ThankYouSectionState extends State<ThankYouSection> {
           // Thank You Content
           Container(
             width: double.infinity,
-            color: KStyle.cWhite,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFDFCFB),
+              image: DecorationImage(
+                image: const AssetImage('assets/images/paper_texture.webp'),
+                repeat: ImageRepeat.repeat,
+                opacity: 0.4,
+                fit: BoxFit.none,
+                scale: 3.5,
+              ),
+            ),
             padding: const EdgeInsets.symmetric(vertical: 120),
             child: Column(
               children: [
@@ -80,27 +90,7 @@ class _ThankYouSectionState extends State<ThankYouSection> {
           ),
 
           // Simple Footer
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: KStyle.cWhite, 
-              border: Border(
-                top: BorderSide(
-                  color: KStyle.cStroke,
-                  width: 1,
-                ),
-              ),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Center(
-              child: Text(
-                '© Mingalaroo 2026 • Designed & Built by Spacematter Apps',
-                style: KStyle.tBodyS.copyWith(
-                  color: KStyle.cDisable,
-                ),
-              ),
-            ),
-          ),
+          const FooterSection(),
         ],
       ),
     );

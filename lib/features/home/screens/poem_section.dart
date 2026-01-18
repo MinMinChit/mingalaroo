@@ -12,9 +12,19 @@ class PoemSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isMobile = MediaQuery.sizeOf(context).width < 600;
 
-    return Column(
-      children: [
-        // PART 1: Text Container
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDFCFB),
+        image: DecorationImage(
+          image: const AssetImage('assets/images/paper_texture.webp'),
+          repeat: ImageRepeat.repeat,
+          opacity: 0.4,
+          fit: BoxFit.none,
+          scale: 3.5,
+        ),
+      ),
+      child: Column(
+        children: [
         Container(
           width: double.infinity,
           child: Stack(
@@ -67,6 +77,7 @@ class PoemSection extends StatelessWidget {
           ],
           speedDuration: isMobile ? 70.seconds : 50.seconds,
           isMovingRight: true,
+          height: isMobile ? 180 : 320,
         ),
 
         const SizedBox(height: 16),
@@ -79,11 +90,13 @@ class PoemSection extends StatelessWidget {
           ],
           speedDuration: isMobile ? 85.seconds : 63.seconds, 
           isMovingRight: false, // Move Left
+          height: isMobile ? 180 : 320,
         ),
 
         // 16px sized box
         const SizedBox(height: 16),
       ],
+      ),
     );
   }
 }
@@ -92,18 +105,17 @@ class _ScrollingImageRow extends StatelessWidget {
   final List<String> imagePaths;
   final Duration speedDuration;
   final bool isMovingRight;
+  final double height;
 
   const _ScrollingImageRow({
     required this.imagePaths,
     required this.speedDuration,
     required this.isMovingRight,
+    this.height = 320,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Height 320
-    const double height = 320;
-
     return SizedBox(
       height: height,
       width: double.infinity,

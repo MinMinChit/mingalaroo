@@ -5,7 +5,12 @@ import 'package:wedding_v1/constants/color_style.dart';
 import 'package:wedding_v1/features/home/widgets/magic_btn.dart';
 
 class RSVPSection extends StatefulWidget {
-  const RSVPSection({super.key});
+  final VoidCallback? onCelebrateFromAfar;
+
+  const RSVPSection({
+    super.key, 
+    this.onCelebrateFromAfar,
+  });
 
   @override
   State<RSVPSection> createState() => _RSVPSectionState();
@@ -27,7 +32,16 @@ class _RSVPSectionState extends State<RSVPSection> {
       },
       child: Container(
         width: double.infinity,
-        color: KStyle.cBg1, // Background color bg1 as requested
+        decoration: BoxDecoration(
+          color: const Color(0xFFFDFCFB),
+          image: DecorationImage(
+            image: const AssetImage('assets/images/paper_texture.webp'),
+            repeat: ImageRepeat.repeat,
+            opacity: 0.4,
+            fit: BoxFit.none,
+            scale: 3.5,
+          ),
+        ),
         padding: const EdgeInsets.symmetric(vertical: 160, horizontal: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +70,7 @@ class _RSVPSectionState extends State<RSVPSection> {
 
             // Subtitle
             Text(
-              'Let Phyo & Cho know, if you could attend our wedding ceremony.',
+              'Let us know, if you could attend our wedding ceremony.',
               style: KStyle.tTitleL.copyWith(
                 color: KStyle.cSecondaryText,
                 fontWeight: FontWeight.normal, 
@@ -98,8 +112,8 @@ class _RSVPSectionState extends State<RSVPSection> {
                       ),
                     ),
                   ).animate(target: _isVisible ? 1 : 0)
-                  .scale(delay: 600.ms, duration: 600.ms, curve: Curves.elasticOut)
-                  .fadeIn(delay: 600.ms, duration: 400.ms),
+                  .fadeIn(delay: 600.ms, duration: 800.ms, curve: Curves.easeOut)
+                  .slideY(begin: 0.1, end: 0, delay: 600.ms, duration: 800.ms, curve: Curves.easeOutCubic),
 
                   const SizedBox(height: 16),
 
@@ -108,7 +122,43 @@ class _RSVPSectionState extends State<RSVPSection> {
                     width: double.infinity,
                     height: 48,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.transparent,
+                            elevation: 0,
+                            padding: EdgeInsets.zero,
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                            content: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(color: Colors.black12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  "We'll miss you! 🥺",
+                                  textAlign: TextAlign.center,
+                                  style: KStyle.tBodyM.copyWith(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                            margin: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).size.height - 120, // Adjusted top position
+                            ),
+                          ),
+                        );
+                        widget.onCelebrateFromAfar?.call();
+                      },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: KStyle.cSecondaryText.withOpacity(0.5)),
                         shape: RoundedRectangleBorder(
@@ -124,8 +174,8 @@ class _RSVPSectionState extends State<RSVPSection> {
                       ),
                     ),
                   ).animate(target: _isVisible ? 1 : 0)
-                  .scale(delay: 800.ms, duration: 600.ms, curve: Curves.elasticOut)
-                  .fadeIn(delay: 800.ms, duration: 400.ms),
+                  .fadeIn(delay: 800.ms, duration: 800.ms, curve: Curves.easeOut)
+                  .slideY(begin: 0.1, end: 0, delay: 800.ms, duration: 800.ms, curve: Curves.easeOutCubic),
                 ],
               ),
             ),

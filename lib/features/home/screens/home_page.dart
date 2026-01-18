@@ -4,6 +4,7 @@ import 'package:wedding_v1/features/home/screens/spouse_name_section.dart';
 import 'package:wedding_v1/features/home/screens/poem_section.dart';
 import 'package:wedding_v1/features/home/screens/rsvp_section.dart';
 import 'package:wedding_v1/features/home/screens/story_section.dart';
+import 'package:wedding_v1/features/home/screens/payment_section.dart';
 import 'package:wedding_v1/features/home/screens/thank_you_section.dart';
 
 import '../../../services/curtain_animation.dart';
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey _paymentKey = GlobalKey();
   bool openCurtain = false;
   @override
   void initState() {
@@ -30,6 +32,17 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToPayment() {
+    if (_paymentKey.currentContext != null) {
+      Scrollable.ensureVisible(
+        _paymentKey.currentContext!,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeInOut,
+        alignment: 0.0,
+      );
+    }
   }
 
   @override
@@ -58,7 +71,8 @@ class _HomePageState extends State<HomePage> {
                 StorySection(),
                 PoemSection(),
                 InviteSection(),
-                RSVPSection(),
+                RSVPSection(onCelebrateFromAfar: _scrollToPayment),
+                PaymentSection(key: _paymentKey),
                 ThankYouSection(),
               ],
             ),
