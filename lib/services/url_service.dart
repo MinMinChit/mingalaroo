@@ -46,26 +46,24 @@ class UrlService {
     // Try parsing as standard query parameters first (key=value format)
     final uri = Uri.parse(html.window.location.href);
     final queryParams = uri.queryParameters;
-    print('queryParams: $queryParams');
 
     if (queryParams.isNotEmpty) {
       // Get the first query parameter value
-      final firstValue = queryParams.values.first;
+      final firstValue = queryParams['guest'] ?? "Guest";
       // URL decode it (handles %20 -> space, etc.)
-      return Uri.decodeComponent(firstValue);
-    }
-
-    // If no key=value format, treat the entire query string as the value
-    // This handles cases like "?kyaw" or "?kyaw%20kyaw"
-    if (queryString.contains('=')) {
-      // Has '=' but wasn't in queryParameters, try to parse manually
-      final parts = queryString.split('=');
-      if (parts.length > 1) {
-        return Uri.decodeComponent(parts[1]);
-      }
-    } else {
-      // No '=' sign, treat the whole query string as the value
-      return Uri.decodeComponent(queryString);
+      final decoded = Uri.decodeComponent(firstValue);
+      // Replace hyphens with spaces and capitalize each word
+      final words = decoded
+          .replaceAll('-', ' ')
+          .split(' ')
+          .where((word) => word.isNotEmpty)
+          .map(
+            (word) => word.isEmpty
+                ? word
+                : word[0].toUpperCase() + word.substring(1).toLowerCase(),
+          )
+          .join(' ');
+      return words;
     }
 
     return null;

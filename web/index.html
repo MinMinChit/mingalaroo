@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -21,40 +8,100 @@
   <meta name="description" content="Welcome to my wedding.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="wedding_v1">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>wedding_v1</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- Performance optimizations -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
-  <!-- Preload critical resources -->
-  <link rel="preload" href="flutter_bootstrap.js" as="script">
-  <link rel="preload" href="main.dart.js" as="script">
-  
-  <!-- DNS prefetch for external resources -->
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <style>
+    body {
+      background-color: #ffffff; /* Match your app background */
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    /* Elegant heart-beat loader for a wedding theme */
+    .loader {
+      width: 50px;
+      height: 50px;
+      background: #e91e63; /* Pinkish/Red theme */
+      transform: rotate(45deg);
+      animation: heartBeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    .loader:after, .loader:before {
+      content: " ";
+      position: absolute;
+      display: block;
+      width: 50px;
+      height: 50px;
+      background: #e91e63;
+      border-radius: 50%;
+    }
+    .loader:after { top: -25px; left: 0; }
+    .loader:before { left: -25px; top: 0; }
+
+    @keyframes heartBeat {
+      0% { transform: scale(0.95) rotate(45deg); }
+      5% { transform: scale(1.1) rotate(45deg); }
+      39% { transform: scale(0.85) rotate(45deg); }
+      45% { transform: scale(1) rotate(45deg); }
+      60% { transform: scale(0.95) rotate(45deg); }
+      100% { transform: scale(0.9) rotate(45deg); }
+    }
+
+    .loading-text {
+      margin-top: 40px;
+      font-family: sans-serif;
+      color: #888;
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+  </style>
 </head>
 <body>
+  <div id="loading-indicator" class="container">
+    <div class="loader"></div>
+    <div class="loading-text">LOADING OUR STORY...</div>
+  </div>
+
   <script>
-    // Optimize loading: defer non-critical scripts
-    window.addEventListener('load', function() {
-      // Service worker can be loaded after main content
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('flutter_service_worker.js').catch(function() {});
+    // This script ensures the loader disappears once Flutter is ready
+    window.addEventListener('load', function(ev) {
+      // In latest Flutter, we hook into the bootstrap process
+      if (typeof _flutter !== 'undefined') {
+        _flutter.loader.load({
+          onEntrypointLoaded: async function(engineInitializer) {
+            const appRunner = await engineInitializer.initializeEngine();
+            
+            // REMOVE THE LOADER
+            var loader = document.getElementById("loading-indicator");
+            if (loader) { loader.remove(); }
+            
+            await appRunner.runApp();
+          }
+        });
       }
     });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
   </script>
-  <script src="flutter_bootstrap.js?v2" async></script>
+  <script src="flutter_bootstrap.js?v11" async></script>
 </body>
 </html>

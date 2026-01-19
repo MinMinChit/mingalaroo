@@ -57,7 +57,7 @@ class _VelvetCurtainScreenState extends State<VelvetCurtainScreen>
             left: 0,
             top: 0,
             bottom: 0,
-            width: halfWidth + 20,
+            width: halfWidth,
             child: AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
@@ -84,7 +84,7 @@ class _VelvetCurtainScreenState extends State<VelvetCurtainScreen>
             right: 0,
             top: 0,
             bottom: 0,
-            width: halfWidth + 20,
+            width: halfWidth,
             child: AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
@@ -105,7 +105,18 @@ class _VelvetCurtainScreenState extends State<VelvetCurtainScreen>
             ),
           ),
 
-          if (showTap)
+          if (showTap) ...[
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 80),
+                child: Image.asset(
+                  'assets/icons/tap_here.gif',
+                  cacheHeight: 50,
+                  cacheWidth: 50,
+                ),
+              ),
+            ),
             const Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -116,6 +127,7 @@ class _VelvetCurtainScreenState extends State<VelvetCurtainScreen>
                 ),
               ),
             ),
+          ],
         ],
       ),
     );

@@ -49,15 +49,15 @@ class _InviteSectionState extends State<InviteSection> {
                 children: [
                   buildDetails(
                     iconData: RemixIcons.hotel_fill,
-                    title: 'Inya Lake Hotel',
-                    content: 'Venue',
+                    title: 'Inya Lake Hotel (Lake side)',
+                    content: 'Wedding Venue',
                     delay: 200.ms,
                   ),
                   const SizedBox(height: 80),
                   buildDetails(
                     iconData: RemixIcons.time_fill,
-                    title: '12 Feb, 2026\n8am - 11am',
-                    content: 'Time',
+                    title: '12 Feb, 2026\n8am - 10am',
+                    content: 'Wedding Time',
                     delay: 400.ms,
                   ),
                   const SizedBox(height: 80),

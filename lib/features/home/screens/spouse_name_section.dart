@@ -80,7 +80,7 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
                       ),
                       buildNameJob(
                             'Cho Phoo Paing',
-                            '''B.C.Sc (Software Engineering) (UCSY)\nonly daughter of U Soe Paing and Daw Yi Yi Cho''',
+                            '''B.C.Sc (UCSY)\nonly daughter of U Soe Paing and Daw Yi Yi Cho''',
                           )
                           .animate(target: _isVisible ? 1 : 0)
                           .fadeIn(duration: 1200.ms, curve: Curves.easeOut),

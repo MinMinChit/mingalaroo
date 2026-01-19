@@ -20,6 +20,13 @@ class CelebrationButton extends StatefulWidget {
 
 class _CelebrationButtonState extends State<CelebrationButton> {
   bool _isCooldown = false;
+  Timer? _cooldownTimer;
+
+  @override
+  void dispose() {
+    _cooldownTimer?.cancel();
+    super.dispose();
+  }
 
   void _handleTap() {
     if (_isCooldown) return;
@@ -33,7 +40,8 @@ class _CelebrationButtonState extends State<CelebrationButton> {
     setState(() {
       _isCooldown = true;
     });
-    Timer(const Duration(seconds: 5), () {
+    _cooldownTimer?.cancel(); // Cancel any existing timer
+    _cooldownTimer = Timer(const Duration(seconds: 5), () {
       if (mounted) {
         setState(() {
           _isCooldown = false;
@@ -136,7 +144,7 @@ class _ParticleOverlayState extends State<ParticleOverlay>
   }
 
   void _spawnParticles() {
-    // We can't access MediaQuery size easily in initState generally, 
+    // We can't access MediaQuery size easily in initState generally,
     // but in Overlay it should be safe or we use window size / LayoutBuilder.
     // Actually, CustomPaint will give us size in paint, but we need to spawn first.
     // Use window physical size / pixel ratio or generic large bounds.

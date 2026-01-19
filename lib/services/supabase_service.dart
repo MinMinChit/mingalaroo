@@ -37,6 +37,10 @@ class SupabaseService {
     required String attendanceState,
     String guestCount = '0',
   }) async {
+    String convertGuestNameToSlug(String guestName) {
+      return guestName.toLowerCase().replaceAll(' ', '-');
+    }
+
     try {
       final response = await client
           .from('invited_users')
@@ -44,7 +48,7 @@ class SupabaseService {
             'attendance_state': attendanceState,
             'guest_count': guestCount,
           })
-          .eq('guest_name', guestName)
+          .eq('guest_name', convertGuestNameToSlug(guestName))
           .select()
           .maybeSingle();
 
