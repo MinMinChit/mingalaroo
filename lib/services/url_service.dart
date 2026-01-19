@@ -33,9 +33,6 @@ class UrlService {
     if (search.isEmpty) {
       return null;
     }
-
-    print('search: $search');
-
     // Remove the leading '?' if present
     final queryString = search.startsWith('?') ? search.substring(1) : search;
 

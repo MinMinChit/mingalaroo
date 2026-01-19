@@ -32,8 +32,6 @@ class _RSVPSectionState extends State<RSVPSection> {
     final urlData = UrlService.getUrlData();
     _weddingId = urlData['weddingId'];
     _invitedUserName = urlData['invitedUserName'];
-    print('weddingId: $_weddingId');
-    print('invitedUserName: $_invitedUserName');
   }
 
   /// Get the wedding ID from URL (available for API calls or data fetching)
