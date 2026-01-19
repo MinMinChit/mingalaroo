@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:wedding_v1/constants/color_style.dart';
+import 'package:wedding_v1/widgets/lazy_image.dart';
 
 class SpouseNameSection extends StatefulWidget {
   const SpouseNameSection({super.key});
@@ -72,7 +73,10 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
                       const SizedBox(height: 12),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 48),
-                        child: _buildTiltingHeart(context, constraints.maxWidth),
+                        child: _buildTiltingHeart(
+                          context,
+                          constraints.maxWidth,
+                        ),
                       ),
                       buildNameJob(
                             'Cho Phoo Paing',
@@ -94,22 +98,22 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
   Widget _buildTiltingHeart(BuildContext context, double maxWidth) {
     final double centerX = maxWidth / 2;
     // Approximate center Y
-    const double centerY = 400; 
+    const double centerY = 400;
 
     final double dx = _mousePos.dx - centerX;
     final double dy = _mousePos.dy - centerY;
-    
+
     // Max tilt
-    const double maxTilt = 0.5; 
+    const double maxTilt = 0.5;
 
     // Reflection calculation
-    final double reflectX = (_mousePos.dx / maxWidth).clamp(0, 1) * 2 - 1; 
-    final double reflectY = (_mousePos.dy / 800).clamp(0, 1) * 2 - 1; 
+    final double reflectX = (_mousePos.dx / maxWidth).clamp(0, 1) * 2 - 1;
+    final double reflectY = (_mousePos.dy / 800).clamp(0, 1) * 2 - 1;
 
     return Transform(
       transform: Matrix4.identity()
         ..setEntry(3, 2, 0.001) // Perspective
-        ..rotateX(-dy * 0.001 * maxTilt) 
+        ..rotateX(-dy * 0.001 * maxTilt)
         ..rotateY(dx * 0.001 * maxTilt),
       alignment: Alignment.center,
       child: Stack(
@@ -120,7 +124,7 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
             size: const Size(48, 48),
             painter: _HeartPainter(color: Colors.red),
           ),
-          
+
           // Glossy Reflection Overlay (Clipped)
           ClipPath(
             clipper: const _HeartClipper(),
@@ -130,9 +134,9 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   center: Alignment(-reflectX, -reflectY),
-                  radius: 1.0, 
+                  radius: 1.0,
                   colors: [
-                    Colors.white.withOpacity(0.5), 
+                    Colors.white.withOpacity(0.5),
                     Colors.transparent,
                   ],
                   stops: const [0.0, 1.0],
@@ -144,6 +148,7 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
       ),
     );
   }
+
   Widget _buildAnimatedBackground() {
     return Stack(
       children: [
@@ -161,14 +166,14 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
       animation: _bgController,
       builder: (context, child) {
         // Panning from -5% to +5% of width to create movement without massive cropping
-        final offset = (_bgController.value - 0.5) * 50; 
-        
+        final offset = (_bgController.value - 0.5) * 50;
+
         return Transform.translate(
           offset: Offset(offset, 0),
           child: Opacity(
             opacity: opacity,
-            child: Image.asset(
-              'assets/images/name_bg.webp',
+            child: LazyImage(
+              imagePath: 'assets/images/name_bg.webp',
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
@@ -191,7 +196,10 @@ class _SpouseNameSectionState extends State<SpouseNameSection>
         Text(
           job,
           textAlign: TextAlign.center,
-          style: KStyle.tBodyS.copyWith(color: KStyle.cWhite.withOpacity(0.5), height: 1.5),
+          style: KStyle.tBodyS.copyWith(
+            color: KStyle.cWhite.withOpacity(0.5),
+            height: 1.5,
+          ),
         ),
       ],
     );
@@ -227,14 +235,26 @@ class _HeartClipper extends CustomClipper<Path> {
   static Path getHeartPath(Size size) {
     final double width = size.width;
     final double height = size.height;
-    
+
     final path = Path();
     path.moveTo(0.5 * width, height * 0.35);
-    path.cubicTo(0.2 * width, height * 0.1, -0.25 * width, height * 0.6,
-        0.5 * width, height);
+    path.cubicTo(
+      0.2 * width,
+      height * 0.1,
+      -0.25 * width,
+      height * 0.6,
+      0.5 * width,
+      height,
+    );
     path.moveTo(0.5 * width, height * 0.35);
-    path.cubicTo(0.8 * width, height * 0.1, 1.25 * width, height * 0.6,
-        0.5 * width, height);
+    path.cubicTo(
+      0.8 * width,
+      height * 0.1,
+      1.25 * width,
+      height * 0.6,
+      0.5 * width,
+      height,
+    );
     return path;
   }
 

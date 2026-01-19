@@ -1,14 +1,15 @@
-// Generate slug from guest name
 export function generateSlug(name) {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .trim()
+    .replace(/[^\p{L}\p{N}]+/gu, "-") // Keeps all Unicode letters and numbers
+    .replace(/^-+|-+$/g, "");        // Removes leading/trailing hyphens
 }
+
 
 // Generate full link: mingalaroo.com/{user_id}/{slug}
 export function generateLink(userId, slug) {
-  return `mingalaroo.com/${userId}/${slug}`;
+  return `mingalaroo.com/1?guest=${slug}`;
 }
 
 // Calculate guest count from string like "1 + 1" or "2 + 3"

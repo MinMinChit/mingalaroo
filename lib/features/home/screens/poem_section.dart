@@ -88,7 +88,7 @@ class PoemSection extends StatelessWidget {
             'assets/images/poem_line2.webp',
             'assets/images/poen_line1.webp',
           ],
-          speedDuration: isMobile ? 85.seconds : 63.seconds, 
+          speedDuration: isMobile ? 85.seconds : 63.seconds,
           isMovingRight: false, // Move Left
           height: isMobile ? 180 : 320,
         ),
@@ -123,33 +123,44 @@ class _ScrollingImageRow extends StatelessWidget {
         child: OverflowBox(
           maxWidth: double.infinity, // Allow infinite width for the row
           alignment: Alignment.centerLeft,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Repeat list 4x to ensure infinite scroll coverage even on wide screens
-              ...imagePaths.map((p) => _buildImageSegment(p, height)),
-              ...imagePaths.map((p) => _buildImageSegment(p, height)),
-              ...imagePaths.map((p) => _buildImageSegment(p, height)),
-              ...imagePaths.map((p) => _buildImageSegment(p, height)),
-            ], 
-          )
-          .animate(onPlay: (c) => c.repeat())
-          .slideX(
-            // Slide by 25% of total width (which equals 1 full set of images out of 4)
-            begin: isMovingRight ? -0.25 : 0, 
-            end: isMovingRight ? 0 : -0.25,
-            duration: speedDuration,
-          ),
+          child:
+              Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Repeat list 4x to ensure infinite scroll coverage even on wide screens
+                      ...imagePaths.map((p) => _buildImageSegment(p, height)),
+                      ...imagePaths.map((p) => _buildImageSegment(p, height)),
+                      ...imagePaths.map((p) => _buildImageSegment(p, height)),
+                      ...imagePaths.map((p) => _buildImageSegment(p, height)),
+                    ],
+                  )
+                  .animate(onPlay: (c) => c.repeat())
+                  .slideX(
+                    // Slide by 25% of total width (which equals 1 full set of images out of 4)
+                    begin: isMovingRight ? -0.25 : 0,
+                    end: isMovingRight ? 0 : -0.25,
+                    duration: speedDuration,
+                  ),
         ),
       ),
     );
   }
 
   Widget _buildImageSegment(String path, double height) {
+    // Use regular Image.asset for scrolling images since VisibilityDetector
+    // doesn't work reliably inside animated OverflowBox
     return Image.asset(
       path,
       height: height,
       fit: BoxFit.fitHeight,
+      // Add error handling
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          height: height,
+          color: Colors.grey[200],
+          child: const Icon(Icons.error),
+        );
+      },
     );
   }
 }
@@ -163,7 +174,8 @@ class _TypewriterText extends StatefulWidget {
 
 class _TypewriterTextState extends State<_TypewriterText> {
   bool _isVisible = false;
-  static const String _text = '10 years old story unfolding..\nto detest the time with \ncountless memories';
+  static const String _text =
+      '10 years old story unfolding..\nto detest the time with \ncountless memories';
 
   @override
   Widget build(BuildContext context) {
@@ -177,29 +189,34 @@ class _TypewriterTextState extends State<_TypewriterText> {
           setState(() => _isVisible = true);
         }
       },
-      child: Text(
-        _text,
-        textAlign: TextAlign.center,
-        style: style.copyWith(color: Colors.transparent), // Placeholder for layout
-      )
-      .animate(target: _isVisible ? 1 : 0)
-      .custom(
-        duration: 4000.ms, // 4 seconds total typing
-        builder: (context, value, child) {
-          final int count = (value * _text.length).clamp(0, _text.length).toInt();
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              child!, // Keeps the layout size fixed
-              Text(
-                _text.substring(0, count),
+      child:
+          Text(
+                _text,
                 textAlign: TextAlign.center,
-                style: style,
+                style: style.copyWith(
+                  color: Colors.transparent,
+                ), // Placeholder for layout
+              )
+              .animate(target: _isVisible ? 1 : 0)
+              .custom(
+                duration: 4000.ms, // 4 seconds total typing
+                builder: (context, value, child) {
+                  final int count = (value * _text.length)
+                      .clamp(0, _text.length)
+                      .toInt();
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      child, // Keeps the layout size fixed
+                      Text(
+                        _text.substring(0, count),
+                        textAlign: TextAlign.center,
+                        style: style,
+                      ),
+                    ],
+                  );
+                },
               ),
-            ],
-          );
-        },
-      ),
     );
   }
 }

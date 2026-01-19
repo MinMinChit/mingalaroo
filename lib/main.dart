@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:wedding_v1/features/home/screens/home_page.dart';
 import 'package:wedding_v1/services/app_theme.dart';
+import 'package:wedding_v1/services/supabase_service.dart';
 import 'package:wedding_v1/widgets/emoji_cursor.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SupabaseService.initialize();
   runApp(const MyApp());
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:wedding_v1/constants/color_style.dart';
+import 'package:wedding_v1/widgets/lazy_image.dart';
 
 class InviteSection extends StatefulWidget {
   const InviteSection({super.key});
@@ -36,8 +37,8 @@ class _InviteSectionState extends State<InviteSection> {
               ),
             ),
             Positioned.fill(
-              child: Image.asset(
-                'assets/images/couple_kiss.png',
+              child: LazyImage(
+                imagePath: 'assets/images/couple_kiss.webp',
                 fit: BoxFit.cover,
               ),
             ),
@@ -47,10 +48,10 @@ class _InviteSectionState extends State<InviteSection> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildDetails(
-                      iconData: RemixIcons.hotel_fill,
-                      title: 'Inya Lake Hotel',
-                      content: 'Venue',
-                      delay: 200.ms,
+                    iconData: RemixIcons.hotel_fill,
+                    title: 'Inya Lake Hotel',
+                    content: 'Venue',
+                    delay: 200.ms,
                   ),
                   const SizedBox(height: 80),
                   buildDetails(
@@ -61,14 +62,20 @@ class _InviteSectionState extends State<InviteSection> {
                   ),
                   const SizedBox(height: 80),
                   Text(
-                    'We cordially invite to join our\nwedding ceremony.',
-                    style: KStyle.tTitleXL.copyWith(
-                      color: KStyle.cWhite,
-                    ),
-                    textAlign: TextAlign.center,
-                  ).animate(target: _isVisible ? 1 : 0)
-                  .fadeIn(duration: 800.ms)
-                  .slideY(begin: 0.2, end: 0, duration: 800.ms, curve: Curves.easeOutCubic),
+                        'We cordially invite to join our\nwedding ceremony.',
+                        style: KStyle.tTitleXL.copyWith(
+                          color: KStyle.cWhite,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                      .animate(target: _isVisible ? 1 : 0)
+                      .fadeIn(duration: 800.ms)
+                      .slideY(
+                        begin: 0.2,
+                        end: 0,
+                        duration: 800.ms,
+                        curve: Curves.easeOutCubic,
+                      ),
                 ],
               ),
             ),
@@ -85,30 +92,37 @@ class _InviteSectionState extends State<InviteSection> {
     required Duration delay,
   }) {
     return Column(
-      children: [
-        Icon(
-          iconData,
-          color: KStyle.cBrand,
-          size: 32,
-        ),
-        SizedBox(height: 16),
-        Text(
-          title,
-          style: KStyle.tTitleXL.copyWith(
-            color: KStyle.cWhite,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          content,
-          style: KStyle.tBodyM.copyWith(
-            color: KStyle.cDisable,
-          ),
-        ),
-      ],
-    ).animate(target: _isVisible ? 1 : 0)
-    .fadeIn(delay: delay, duration: 800.ms)
-    .slideY(begin: 0.2, end: 0, delay: delay, duration: 800.ms, curve: Curves.easeOutCubic);
+          children: [
+            Icon(
+              iconData,
+              color: KStyle.cBrand,
+              size: 32,
+            ),
+            SizedBox(height: 16),
+            Text(
+              title,
+              style: KStyle.tTitleXL.copyWith(
+                color: KStyle.cWhite,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              content,
+              style: KStyle.tBodyM.copyWith(
+                color: KStyle.cDisable,
+              ),
+            ),
+          ],
+        )
+        .animate(target: _isVisible ? 1 : 0)
+        .fadeIn(delay: delay, duration: 800.ms)
+        .slideY(
+          begin: 0.2,
+          end: 0,
+          delay: delay,
+          duration: 800.ms,
+          curve: Curves.easeOutCubic,
+        );
   }
 }

@@ -32,8 +32,29 @@
 
   <title>wedding_v1</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Performance optimizations -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <link rel="preload" href="main.dart.js" as="script">
+  
+  <!-- DNS prefetch for external resources -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Optimize loading: defer non-critical scripts
+    window.addEventListener('load', function() {
+      // Service worker can be loaded after main content
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('flutter_service_worker.js').catch(function() {});
+      }
+    });
+  </script>
+  <script src="flutter_bootstrap.js?v2" async></script>
 </body>
 </html>
