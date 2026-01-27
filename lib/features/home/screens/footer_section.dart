@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wedding_v1/constants/color_style.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
@@ -9,7 +10,7 @@ class FooterSection extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: KStyle.cWhite, 
+        color: KStyle.cWhite,
         border: Border(
           top: BorderSide(
             color: KStyle.cStroke,
@@ -19,10 +20,16 @@ class FooterSection extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: Center(
-        child: Text(
-          '© Mingalaroo 2026',
-          style: KStyle.tBodyS.copyWith(
-            color: KStyle.cDisable,
+        child: GestureDetector(
+          onTap: () {
+            launchUrl(Uri.parse('https://mingalaroo.com'));
+          },
+          child: Text(
+            '© Mingalaroo 2026',
+            style: KStyle.tBodyS.copyWith(
+              color: KStyle.cDisable,
+              decoration: TextDecoration.underline,
+            ),
           ),
         ),
       ),

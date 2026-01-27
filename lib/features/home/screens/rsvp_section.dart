@@ -22,6 +22,7 @@ class RSVPSection extends StatefulWidget {
 class _RSVPSectionState extends State<RSVPSection> {
   bool _isVisible = false;
   String? _invitedUserName;
+  String? _originalName;
   String? _weddingId;
   bool _isSubmitting = false;
 
@@ -32,6 +33,7 @@ class _RSVPSectionState extends State<RSVPSection> {
     final urlData = UrlService.getUrlData();
     _weddingId = urlData['weddingId'];
     _invitedUserName = urlData['invitedUserName'];
+    _originalName = urlData['originalName'];
   }
 
   /// Get the wedding ID from URL (available for API calls or data fetching)
@@ -55,7 +57,7 @@ class _RSVPSectionState extends State<RSVPSection> {
 
     try {
       await SupabaseService.updateRSVP(
-        guestName: _invitedUserName!,
+        guestName: _originalName!,
         attendanceState: attendanceState,
         guestCount: '0',
       );

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+// Cache Interval objects to avoid recreating on every frame
+final _bottomInterval = Interval(0.0, 0.8, curve: Curves.easeIn);
+final _topInterval = Interval(0.4, 1.0, curve: Curves.easeIn);
+
 class VelvetCurtainScreen extends StatefulWidget {
   const VelvetCurtainScreen({super.key, required this.onChanged});
   final VoidCallback onChanged;
@@ -48,60 +52,53 @@ class _VelvetCurtainScreenState extends State<VelvetCurtainScreen>
   Widget build(BuildContext context) {
     final double halfWidth = MediaQuery.of(context).size.width / 2;
 
+    // Cache the fabric widget to avoid rebuilding it
+    final leftFabric = const VelvetFabric();
+    final rightFabric = const VelvetFabric();
+
     return GestureDetector(
       onTap: _toggleAnimation,
       child: Stack(
         children: [
-          // 2. LEFT CURTAIN PANEL
+          // LEFT CURTAIN PANEL - Isolated with RepaintBoundary
           Positioned(
             left: 0,
             top: 0,
             bottom: 0,
             width: halfWidth,
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return CustomPaint(
-                  // Draws the shadow/trim on the edge
-                  foregroundPainter: CurtainEdgePainter(
+            child: RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) {
+                  return _CurtainPanel(
                     progress: _animation.value,
                     isLeft: true,
-                  ),
-                  child: ClipPath(
-                    clipper: SideCurtainClipper(
-                      progress: _animation.value,
-                      isLeft: true,
-                    ),
-                    child: const VelvetFabric(), // The Red Texture
-                  ),
-                );
-              },
+                    fabric: leftFabric,
+                  );
+                },
+                child: leftFabric, // Pass as child to avoid rebuilding
+              ),
             ),
           ),
 
-          // 3. RIGHT CURTAIN PANEL
+          // RIGHT CURTAIN PANEL - Isolated with RepaintBoundary
           Positioned(
             right: 0,
             top: 0,
             bottom: 0,
             width: halfWidth,
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return CustomPaint(
-                  foregroundPainter: CurtainEdgePainter(
+            child: RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) {
+                  return _CurtainPanel(
                     progress: _animation.value,
                     isLeft: false,
-                  ),
-                  child: ClipPath(
-                    clipper: SideCurtainClipper(
-                      progress: _animation.value,
-                      isLeft: false,
-                    ),
-                    child: const VelvetFabric(),
-                  ),
-                );
-              },
+                    fabric: rightFabric,
+                  );
+                },
+                child: rightFabric, // Pass as child to avoid rebuilding
+              ),
             ),
           ),
 
@@ -109,7 +106,7 @@ class _VelvetCurtainScreenState extends State<VelvetCurtainScreen>
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 80),
+                padding: const EdgeInsets.only(bottom: 80),
                 child: Image.asset(
                   'assets/icons/tap_here.gif',
                   cacheHeight: 50,
@@ -118,17 +115,48 @@ class _VelvetCurtainScreenState extends State<VelvetCurtainScreen>
               ),
             ),
             const Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 50),
-                child: Text(
-                  "Tap to Start Show",
-                  style: TextStyle(color: Colors.white70, letterSpacing: 1.5),
+              alignment: Alignment.center,
+              child: Text(
+                "Tap to Start Show",
+                style: TextStyle(
+                  color: Colors.white70,
+                  letterSpacing: 1.5,
+                  fontSize: 20,
                 ),
               ),
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+// Extracted curtain panel widget for better performance
+class _CurtainPanel extends StatelessWidget {
+  final double progress;
+  final bool isLeft;
+  final Widget fabric;
+
+  const _CurtainPanel({
+    required this.progress,
+    required this.isLeft,
+    required this.fabric,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      foregroundPainter: CurtainEdgePainter(
+        progress: progress,
+        isLeft: isLeft,
+      ),
+      child: ClipPath(
+        clipper: SideCurtainClipper(
+          progress: progress,
+          isLeft: isLeft,
+        ),
+        child: fabric,
       ),
     );
   }
@@ -157,13 +185,8 @@ class VelvetFabric extends StatelessWidget {
           // These stops dictate the width of the folds
           stops: const [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ],
+        // Removed boxShadow for better performance - shadows are expensive
+        // The edge painter provides sufficient visual depth
       ),
     );
   }
@@ -172,25 +195,19 @@ class VelvetFabric extends StatelessWidget {
 // --- LOGIC: The Path Math (Shared by Clipper and Painter) ---
 // We extracted the math here so both the Clipper (which cuts)
 // and the Painter (which draws the shadow line) can use the EXACT same curve.
+// Using cached Interval objects from the state class
 Path getCurtainPath(Size size, double progress, bool isLeft) {
   final Path path = Path();
   final w = size.width;
   final h = size.height;
 
-  final double bottomOpenValue = Interval(
-    0.0,
-    0.8,
-    curve: Curves.easeIn,
-  ).transform(progress);
-  final double topOpenValue = Interval(
-    0.4,
-    1.0,
-    curve: Curves.easeIn,
-  ).transform(progress);
+  // Use cached intervals to avoid object creation on every frame
+  final double bottomOpenValue = _bottomInterval.transform(progress);
+  final double topOpenValue = _topInterval.transform(progress);
 
   if (isLeft) {
-    double currentRightEdgeTop = w - (w * topOpenValue);
-    double currentRightEdgeBottom = w - (w * bottomOpenValue * 1.5);
+    final double currentRightEdgeTop = w - (w * topOpenValue);
+    final double currentRightEdgeBottom = w - (w * bottomOpenValue * 1.5);
 
     path.moveTo(0, 0);
     path.lineTo(currentRightEdgeTop, 0);
@@ -203,8 +220,8 @@ Path getCurtainPath(Size size, double progress, bool isLeft) {
     path.lineTo(0, h);
     path.close();
   } else {
-    double currentLeftEdgeTop = 0 + (w * topOpenValue);
-    double currentLeftEdgeBottom = 0 + (w * bottomOpenValue * 1.5);
+    final double currentLeftEdgeTop = w * topOpenValue;
+    final double currentLeftEdgeBottom = w * bottomOpenValue * 1.5;
 
     path.moveTo(w, 0);
     path.lineTo(currentLeftEdgeTop, 0);
@@ -233,7 +250,8 @@ class SideCurtainClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(SideCurtainClipper oldClipper) {
-    return oldClipper.progress != progress;
+    // Only reclip if progress changed significantly (avoid micro-reclips)
+    return (oldClipper.progress - progress).abs() > 0.001;
   }
 }
 
@@ -242,6 +260,13 @@ class CurtainEdgePainter extends CustomPainter {
   final double progress;
   final bool isLeft;
 
+  // Cache paint object to avoid recreating on every frame
+  static final _paint = Paint()
+    ..color = Colors.black.withOpacity(0.5)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 4.0
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
+
   CurtainEdgePainter({required this.progress, required this.isLeft});
 
   @override
@@ -249,20 +274,13 @@ class CurtainEdgePainter extends CustomPainter {
     // 1. Get the exact same path used for clipping
     final Path path = getCurtainPath(size, progress, isLeft);
 
-    // 2. Define a paint for the shadow/edge
-    final Paint paint = Paint()
-      ..color = Colors.black
-          .withOpacity(0.5) // Dark shadow color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0); // Blur it
-
-    // 3. Draw the path
-    canvas.drawPath(path, paint);
+    // 2. Draw the path with cached paint
+    canvas.drawPath(path, _paint);
   }
 
   @override
   bool shouldRepaint(CurtainEdgePainter oldDelegate) {
-    return oldDelegate.progress != progress;
+    // Only repaint if progress changed significantly (avoid micro-repaints)
+    return (oldDelegate.progress - progress).abs() > 0.001;
   }
 }

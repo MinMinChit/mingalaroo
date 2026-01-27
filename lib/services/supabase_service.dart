@@ -38,13 +38,22 @@ class SupabaseService {
     String guestCount = '0',
   }) async {
     try {
+      // Decode URL-encoded guest name
+      // First replace '+' with spaces (URL encoding uses + for spaces in query strings)
+      // Then decode percent-encoded characters (handles %20 -> space, etc.)
+      final decodedGuestName = Uri.decodeComponent(
+        guestName.replaceAll('+', ' '),
+      );
+
+      print(decodedGuestName);
+
       final response = await client
           .from('invited_users')
           .update({
             'attendance_state': attendanceState,
             'guest_count': guestCount,
           })
-          .eq('guest_name', guestName)
+          .eq('guest_name', decodedGuestName)
           .select()
           .maybeSingle();
 

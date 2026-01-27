@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MingalarOo',
+      title: 'Aung & Cho',
       theme: KTheme.lightTheme,
       home: EmojiCursor(
         child: HomePage(),

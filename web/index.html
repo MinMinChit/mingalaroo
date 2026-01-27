@@ -13,9 +13,10 @@
   <meta name="apple-mobile-web-app-title" content="wedding_v1">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>wedding_v1</title>
+  <title>Aung & Cho</title>
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -96,12 +97,35 @@
       }
     });
 
+    // Service worker registration - delayed and non-blocking
+    // This prevents the 4000ms timeout error
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js');
-      });
+      // Wait for Flutter to fully load before registering service worker
+      window.addEventListener('flutter-first-frame', function() {
+        setTimeout(function() {
+          navigator.serviceWorker.register('flutter_service_worker.js', {
+            scope: './',
+            updateViaCache: 'none'
+          }).catch(function(error) {
+            // Silently handle errors - service worker is optional
+            console.log('Service Worker registration failed (non-critical):', error);
+          });
+        }, 2000); // Wait 2 seconds after first frame
+      }, { once: true });
+      
+      // Fallback: register after a delay even if flutter-first-frame doesn't fire
+      setTimeout(function() {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller === null) {
+          navigator.serviceWorker.register('flutter_service_worker.js', {
+            scope: './',
+            updateViaCache: 'none'
+          }).catch(function(error) {
+            console.log('Service Worker fallback registration failed:', error);
+          });
+        }
+      }, 10000); // 10 second fallback
     }
   </script>
-  <script src="flutter_bootstrap.js?v12" async></script>
+  <script src="flutter_bootstrap.js?v15" async></script>
 </body>
 </html>

@@ -26,18 +26,18 @@ class UrlService {
   /// Example: mingalaroo.com/12?kyaw%20kyaw -> returns "kyaw kyaw"
   /// Example: mingalaroo.com/12?kyaw -> returns "kyaw"
   /// The query parameter name can be anything, we'll use the first one
-  static String? getInvitedUserName() {
+  static List<String> getInvitedUserName() {
     // Get the raw search string from the browser (includes the '?' if present)
     final search = html.window.location.search;
 
     if (search.isEmpty) {
-      return null;
+      return [];
     }
     // Remove the leading '?' if present
     final queryString = search.startsWith('?') ? search.substring(1) : search;
 
     if (queryString.isEmpty) {
-      return null;
+      return [];
     }
 
     // Try parsing as standard query parameters first (key=value format)
@@ -60,17 +60,33 @@ class UrlService {
                 : word[0].toUpperCase() + word.substring(1).toLowerCase(),
           )
           .join(' ');
-      return words;
+
+      final originalName = decoded
+          .replaceAll('-', ' ')
+          .split(' ')
+          .where((word) => word.isNotEmpty)
+          .map(
+            (word) =>
+                word.isEmpty ? word : word[0] + word.substring(1).toLowerCase(),
+          )
+          .join(' ');
+
+      return [
+        words,
+        originalName,
+      ];
     }
 
-    return null;
+    return [];
   }
 
   /// Get both wedding ID and invited user name
   static Map<String, String?> getUrlData() {
+    final invitedNames = getInvitedUserName();
     return {
       'weddingId': getWeddingId(),
-      'invitedUserName': getInvitedUserName(),
+      'invitedUserName': invitedNames.isNotEmpty ? invitedNames[0] : null,
+      'originalName': invitedNames.length > 1 ? invitedNames[1] : null,
     };
   }
 }

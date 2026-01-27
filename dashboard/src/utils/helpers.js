@@ -9,7 +9,7 @@ export function generateSlug(name) {
 
 // Generate full link: mingalaroo.com/{user_id}/{slug}
 export function generateLink(userId, slug) {
-  return `mingalaroo.com/1?guest=${slug}`;
+  return `mingalaroo.com/akpcpp/?guest=${slug}`;
 }
 
 // Calculate guest count from string like "1 + 1" or "2 + 3"
