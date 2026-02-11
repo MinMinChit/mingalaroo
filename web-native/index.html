@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#FFFFFF" />
+    <title>Aung &amp; Cho</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inria+Serif:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="no-scroll">
+    <div id="emoji-cursor" aria-hidden="true">💐</div>
+
+    <div id="curtain" class="curtain" role="button" aria-label="Tap to start" tabindex="0">
+      <div class="curtain-panel curtain-left">
+        <svg class="curtain-svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="curtainGradientLeft" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#6b0f0f" />
+              <stop offset="20%" stop-color="#9b1c1c" />
+              <stop offset="40%" stop-color="#6b0f0f" />
+              <stop offset="60%" stop-color="#7d1515" />
+              <stop offset="80%" stop-color="#b02121" />
+              <stop offset="100%" stop-color="#6b0f0f" />
+            </linearGradient>
+            <filter id="curtainShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+            </filter>
+          </defs>
+          <path class="curtain-path" fill="url(#curtainGradientLeft)"></path>
+          <path class="curtain-edge" stroke="rgba(0,0,0,0.5)" stroke-width="4" fill="none"></path>
+        </svg>
+      </div>
+      <div class="curtain-panel curtain-right">
+        <svg class="curtain-svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="curtainGradientRight" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#6b0f0f" />
+              <stop offset="20%" stop-color="#9b1c1c" />
+              <stop offset="40%" stop-color="#6b0f0f" />
+              <stop offset="60%" stop-color="#7d1515" />
+              <stop offset="80%" stop-color="#b02121" />
+              <stop offset="100%" stop-color="#6b0f0f" />
+            </linearGradient>
+          </defs>
+          <path class="curtain-path" fill="url(#curtainGradientRight)"></path>
+          <path class="curtain-edge" stroke="rgba(0,0,0,0.5)" stroke-width="4" fill="none"></path>
+        </svg>
+      </div>
+      <div class="curtain-overlay">
+        <img src="/assets/icons/tap_here.gif" alt="Tap here" width="50" height="50" />
+        <p>Tap to Start Show</p>
+      </div>
+    </div>
+
+    <main id="page">
+      <section id="hero" class="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-gradient" aria-hidden="true"></div>
+        <div class="hero-big-name" data-hero-reveal>Aung &amp; Cho</div>
+        <div class="hero-couple-wrap">
+          <img
+            class="hero-couple"
+            src="/assets/images/couple_hero.webp"
+            alt="Aung & Cho"
+            loading="eager"
+          />
+        </div>
+        <div class="hero-top">
+          <p class="hero-pretitle" data-hero-reveal style="--delay: 0.6s;">We’re Getting Married!</p>
+          <div class="hero-date" data-hero-reveal style="--delay: 1.4s;">
+            <div class="divider">
+              <span class="divider-line"></span>
+              <span class="divider-dot"></span>
+              <span class="divider-line"></span>
+            </div>
+            <p class="hero-date-text">12.2.2026</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="spouse" class="spouse">
+        <div class="spouse-bg" aria-hidden="true"></div>
+        <div class="spouse-content">
+          <div class="spouse-block reveal fade-up" data-delay="0s">
+            <h2>Aung Kyaw Phyo</h2>
+            <p>
+              B.C.Sc (Software Engineering) (UIT)<br />
+              son of U Maung Maung Lwin and Daw Khin San Yu
+            </p>
+          </div>
+          <div class="spouse-heart" aria-hidden="true">
+            <div class="heart-tilt">
+              <svg viewBox="0 0 48 48" width="48" height="48">
+                <path
+                  d="M24 16.8 C9.6 4.8 -6 28.8 24 48 C54 28.8 38.4 4.8 24 16.8 Z"
+                  fill="#e12020"
+                />
+              </svg>
+              <div class="heart-gloss"></div>
+            </div>
+          </div>
+          <div class="spouse-block reveal fade-up" data-delay="0.2s">
+            <h2>Cho Phoo Paing</h2>
+            <p>
+              B.C.Sc (UCSY)<br />
+              only daughter of U Soe Paing and Daw Yi Yi Cho
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="story" class="section paper story">
+        <div class="section-inner">
+          <h2 class="section-title reveal fade-up">Our Story</h2>
+
+          <div class="story-timeline">
+            <div class="story-line"></div>
+
+            <div class="story-item story-left" data-observe>
+              <div class="story-text reveal fade-right">
+                <h3>How We Met</h3>
+                <p>
+                  In the early days of Facebook, a boy noticed a girl at the university hostel and did what any curious heart would do—he searched for her online. With no flirting skills at all, “Peter Phyoe IsGood” sent a message to “Candy Cho Lay”: “Hi, စားပီးပီလား”.
+                  <br /><br />
+                  From that small and funny beginning, days turned into nights of endless chats, sharing stories and dreams. Somewhere between those conversations, love quietly found us—before we even realized it. When it came time to choose our anniversary, we smiled at how unsure we were of the exact moment we fell in love. So we chose 12/02, the day of our very first date, and made it ours forever.
+                </p>
+              </div>
+              <div class="story-heart">
+                <img src="/assets/icons/heart_fill.png" alt="Heart" width="32" height="32" />
+              </div>
+              <div class="story-photos reveal fade-left">
+                <div class="photo-stack left">
+                  <img class="photo back" src="/assets/images/howwemet_2.webp" alt="How we met" loading="lazy" />
+                  <img class="photo front" src="/assets/images/howwemet_1.webp" alt="How we met" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <div class="story-item story-right" data-observe>
+              <div class="story-photos reveal fade-right">
+                <div class="photo-stack right">
+                  <img class="photo back" src="/assets/images/howwelove_2.webp" alt="How we love" loading="lazy" />
+                  <img class="photo front" src="/assets/images/howwelove_1.webp" alt="How we love" loading="lazy" />
+                </div>
+              </div>
+              <div class="story-heart">
+                <img src="/assets/icons/heart_fill.png" alt="Heart" width="32" height="32" />
+              </div>
+              <div class="story-text reveal fade-left">
+                <h3>How We Love</h3>
+                <p>
+                  Our love grew quietly and patiently. From sharing simple meals to sharing dreams, we learned to find happiness in the smallest moments. Through every low and every high, we chose each other—again and again. Today, our love is a place of comfort, laughter, and understanding, where even a single look says everything.
+                </p>
+              </div>
+            </div>
+
+            <div class="story-item story-left" data-observe>
+              <div class="story-text reveal fade-right">
+                <h3>How He Proposed</h3>
+                <p>
+                  Like many grooms, he thought a proposal simply meant a diamond ring—until he realized he had no idea how gold weights or diamond carats worked. After weeks of quiet research and careful planning, he found the perfect ring. But he soon learned that a proposal is about more than a ring—it’s about the moment, the place, and the people who make it special. With the help of close friends and a heart full of love, he finally asked the question he had been holding onto for years. She smiled, said yes, and in that moment, forever began.
+                </p>
+              </div>
+              <div class="story-heart">
+                <img src="/assets/icons/heart_fill.png" alt="Heart" width="32" height="32" />
+              </div>
+              <div class="story-photos reveal fade-left">
+                <div class="photo-stack left">
+                  <img class="photo back" src="/assets/images/howheproposed_1.webp" alt="How he proposed" loading="lazy" />
+                  <img class="photo front" src="/assets/images/howheproposed_2.webp" alt="How he proposed" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <div class="story-finale" data-observe>
+              <img class="floral top-left" src="/assets/images/floral_corner.png" alt="Floral" />
+              <img class="floral bottom-right" src="/assets/images/floral_corner.png" alt="Floral" />
+
+              <div class="finale-content">
+                <h3 class="reveal fade-up">Finally ...</h3>
+                <div class="finale-heart reveal scale-in">
+                  <img src="/assets/images/engaged.webp" alt="Engaged" loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="poem" class="section paper poem">
+        <div class="poem-text">
+          <span class="poem-decor top-left">
+            <img src="/assets/icons/lowerRightDecor.svg" alt="Decor" />
+          </span>
+          <span class="poem-decor bottom-right">
+            <img src="/assets/icons/lowerRightDecor.svg" alt="Decor" />
+          </span>
+          <p
+            class="typewriter"
+            data-typewriter="10 years old story unfolding..\nto detest the time with \ncountless memories"
+          ></p>
+        </div>
+
+        <div class="marquee-row" style="--duration: 50s;">
+          <div class="marquee-track marquee-right">
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+          </div>
+        </div>
+
+        <div class="marquee-row" style="--duration: 63s;">
+          <div class="marquee-track marquee-left">
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+            <img src="/assets/images/poem_line2.webp" alt="Poem line" />
+            <img src="/assets/images/poen_line1.webp" alt="Poem line" />
+          </div>
+        </div>
+      </section>
+
+      <section id="invite" class="invite">
+        <div class="invite-bg" aria-hidden="true"></div>
+        <div class="invite-content" data-observe>
+          <div class="invite-detail reveal fade-up" data-delay="0.2s">
+            <i class="ri-hotel-fill"></i>
+            <h3>Inya Lake Hotel (Lake side)</h3>
+            <p>Wedding Venue</p>
+          </div>
+          <div class="invite-detail reveal fade-up" data-delay="0.4s">
+            <i class="ri-time-fill"></i>
+            <h3>12 Feb, 2026<br />8am - 10am</h3>
+            <p>Wedding Time</p>
+          </div>
+          <p class="invite-note reveal fade-up" data-delay="0.6s">
+            We cordially invite to join our<br />wedding ceremony.
+          </p>
+        </div>
+      </section>
+
+      <section id="rsvp" class="section paper rsvp">
+        <div class="rsvp-content" data-observe>
+          <img class="rsvp-flower reveal scale-in" src="/assets/icons/bouquet.gif" alt="Bouquet" />
+          <h2 class="reveal fade-up" data-delay="0.2s" data-guest-name>Dear Guest,</h2>
+          <p class="reveal fade-up" data-delay="0.4s">
+            Let us know, if you could attend our wedding ceremony.
+          </p>
+          <div class="rsvp-actions reveal fade-up" data-delay="0.6s">
+            <button class="btn btn-dark" data-rsvp="attending">I will be there</button>
+            <button class="btn btn-outline" data-rsvp="not_attending">
+              So Sorry, I will celebrate from afar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="payment" class="section paper payment">
+        <div class="section-inner" data-observe>
+          <div class="payment-intro reveal fade-up">
+            <p>
+              For your convenience, we have provided a QR code for those who wish to send a wedding gift (လက်ဖွဲ့) digitally.
+            </p>
+            <p class="payment-note">
+              Please notify the recipient directly after sending. Website does not handle payments and is not responsible for any transaction errors.
+            </p>
+          </div>
+
+          <div class="payment-options reveal fade-up" data-delay="0.2s">
+            <button class="payment-option is-active" data-id="kpay" data-qr="/assets/images/kpayQR_akp.webp">
+              <span class="payment-icon"><img src="/assets/images/kpay.png" alt="KBZ Pay" /></span>
+              <span class="payment-arrow">▼</span>
+            </button>
+            <button class="payment-option" data-id="wave_akp" data-qr="/assets/images/waveQR_akp.webp">
+              <span class="payment-icon"><img src="/assets/images/wave_akp.png" alt="Wave Pay" /></span>
+              <span class="payment-arrow">▼</span>
+            </button>
+            <button class="payment-option" data-id="wave_cpp" data-qr="/assets/images/waveQR_cpp.webp">
+              <span class="payment-icon"><img src="/assets/images/wave_cpp.png" alt="Wave Pay" /></span>
+              <span class="payment-arrow">▼</span>
+            </button>
+            <button class="payment-option" data-id="aya" data-qr="/assets/images/ayaQR_akp.webp">
+              <span class="payment-icon"><img src="/assets/images/aya.png" alt="AYA Pay" /></span>
+              <span class="payment-arrow">▼</span>
+            </button>
+            <button class="payment-option" data-id="yoma" data-qr="/assets/images/yomaQR_akp.webp">
+              <span class="payment-icon"><img src="/assets/images/yoma.png" alt="Yoma Bank" /></span>
+              <span class="payment-arrow">▼</span>
+            </button>
+            <button class="payment-option" data-id="prompt" data-qr="/assets/images/promptQR_mtk.webp">
+              <span class="payment-icon"><img src="/assets/images/promptpay.png" alt="PromptPay" /></span>
+              <span class="payment-arrow">▼</span>
+            </button>
+          </div>
+
+          <div class="payment-envelope reveal fade-up" data-delay="0.4s">
+            <div class="envelope-stage">
+              <div class="envelope-back"></div>
+              <div class="qr-card">
+                <img id="payment-qr" src="/assets/images/kpayQR_akp.webp" alt="QR" />
+              </div>
+              <div class="envelope-front">
+                <img class="floral floral-left" src="/assets/images/floral_corner.png" alt="Floral" />
+                <img class="floral floral-right" src="/assets/images/floral_corner.png" alt="Floral" />
+                <svg viewBox="0 0 719 422" width="719" height="422" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="envelopeGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#FAFAFA" />
+                      <stop offset="100%" stop-color="#F0F0F0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M0 0 L359.5 168.8 L719 0 L719 422 L0 422 Z"
+                    fill="url(#envelopeGradient)"
+                    stroke="#E6E6E6"
+                    stroke-width="1"
+                  />
+                  <line x1="359.5" y1="168.8" x2="359.5" y2="422" stroke="#E6E6E6" stroke-opacity="0.5" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="thank-you" class="section paper thank-you">
+        <div class="thank-you-content" data-observe>
+          <div class="thank-you-photo reveal scale-in">
+            <img src="/assets/images/thankyou.webp" alt="Thank you" />
+          </div>
+          <p class="reveal fade-up" data-delay="0.4s">
+            Thanks to our friends &amp; family for all<br />warming support.
+          </p>
+          <img
+            class="thank-you-decor reveal scale-x"
+            src="/assets/icons/endDecor.svg"
+            alt="Decor"
+          />
+        </div>
+      </section>
+
+      <footer class="footer">
+        <a href="https://mingalaroo.com" rel="noopener" target="_blank">© Mingalaroo 2026</a>
+      </footer>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="qr-modal" class="qr-modal" aria-hidden="true">
+      <div class="qr-modal-content">
+        <button class="qr-modal-close" aria-label="Close">×</button>
+        <img id="qr-modal-image" src="" alt="QR" />
+      </div>
+    </div>
+    <canvas id="celebration-canvas"></canvas>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
