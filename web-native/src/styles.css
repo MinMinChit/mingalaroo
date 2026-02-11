@@ -166,6 +166,10 @@ p {
   height: 100%;
 }
 
+.curtain-edge {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
 .curtain-overlay {
   position: absolute;
   inset: 0;
@@ -225,7 +229,7 @@ body.page-ready .hero-bg {
   position: absolute;
   top: 40%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) translateY(-40px) scale(0.9);
   font-family: "Great Vibes", cursive;
   font-size: 300px;
   letter-spacing: 15px;
@@ -236,7 +240,7 @@ body.page-ready .hero-bg {
 
 body.page-ready .hero-big-name {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) translateY(-40px) scale(1);
   animation: float 3s ease-in-out infinite;
   animation-delay: 1.5s;
   transition: opacity 1.2s ease-out 0.5s, transform 1.5s ease-out 0.5s;
@@ -251,6 +255,7 @@ body.page-ready .hero-big-name {
   width: 100vw;
   z-index: 3;
   will-change: transform;
+  transform-origin: 50% 100%;
 }
 
 .hero-couple {
@@ -450,12 +455,15 @@ body.page-ready .hero-date-text {
   left: 50%;
   width: 2px;
   background: linear-gradient(to bottom, #e0e0e0, rgba(224, 224, 224, 0));
+  z-index: 0;
 }
 
 .story-item {
   display: grid;
   grid-template-columns: 1fr 80px 1fr;
   align-items: start;
+  position: relative;
+  z-index: 1;
 }
 
 .story-text {
@@ -498,6 +506,18 @@ body.page-ready .hero-date-text {
   display: flex;
   justify-content: center;
   padding-top: 120px;
+  position: relative;
+  z-index: 2;
+}
+
+.heart-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--c-paper);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .story-photos {
@@ -1131,6 +1151,11 @@ body.page-ready .hero-date-text {
     font-size: 140px;
     letter-spacing: 5px;
     top: 42%;
+    transform: translate(-50%, -50%) translateY(-20px) scale(0.9);
+  }
+
+  body.page-ready .hero-big-name {
+    transform: translate(-50%, -50%) translateY(-20px) scale(1);
   }
 
   .hero-pretitle {
