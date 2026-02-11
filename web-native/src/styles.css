@@ -233,6 +233,8 @@ body.page-ready .hero-bg {
   font-family: "Great Vibes", cursive;
   font-size: 300px;
   letter-spacing: 15px;
+  line-height: 1;
+  white-space: nowrap;
   color: var(--c-brand);
   opacity: 0;
   z-index: 2;
